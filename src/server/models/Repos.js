@@ -5,7 +5,7 @@ const RepoSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    repoName: {
+    reponame: {
       type: String
     },
     totalIssuesOpen: {

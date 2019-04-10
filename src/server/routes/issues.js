@@ -3,29 +3,32 @@ const router = express.Router();
 const issuesCont = require("../controllers/issues.cont");
 
 router.post("/locateRepo", (req, res, next) => {
-  const { userName, repoName } = req.body;
-  if (!userName || !repoName) {
+  const { username, reponame } = req.body;
+  console.log(username, reponame);
+  if (!username || !reponame) {
     return next({ status: 404, message: "please pass all the params" });
   }
   return issuesCont
-    .locateRepo(userName, repoName)
+    .locateRepo(username, reponame)
     .then(data => {
-      return res.json(data);
+      console.log(data);
+      return res.json({ success: true, ...data });
     })
     .catch(error => {
+      console.log(error);
       return next(error);
     });
 });
 
-router.get("/issues", (req, res, next) => {
-  const { userName, repoName, page = 1 } = req.body;
-  if (!userName || !repoName) {
+router.post("/", (req, res, next) => {
+  const { username, reponame, repoId, page = 1 } = req.body;
+  if (!username || !reponame) {
     return next({ status: 404, message: "please pass all the params" });
   }
   return issuesCont
-    .getIssues(userName, repoName, page)
+    .getIssues(username, reponame, repoId, page)
     .then(data => {
-      return res.json(data);
+      return res.json({ success: true, data: data });
     })
     .catch(error => {
       return next(error);

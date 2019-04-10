@@ -4,6 +4,9 @@ const githubApiBase = require("../config").github.base;
 const locateRepo = async (username, reponame) => {
   const options = {
     uri: githubApiBase + "/repos/" + username + "/" + reponame,
+    headers: {
+      "User-Agent": "Request-Promise"
+    },
     json: true
   };
   try {
@@ -20,6 +23,9 @@ const locateRepo = async (username, reponame) => {
 const getIssuesByRepo = async (username, reponame, page = 1) => {
   const options = {
     uri: githubApiBase + "/repos/" + username + "/" + reponame + "/issues",
+    headers: {
+      "User-Agent": "Request-Promise"
+    },
     qs: {
       per_page: 20,
       page: page

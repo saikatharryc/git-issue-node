@@ -7,35 +7,43 @@ const locateRepo = async (username, reponame) => {
   const data = await IssueHelper.locateRepo(username, reponame);
   const dataToSend = {
     repoId: data.id,
-    repoName: data.name,
-    totalIssuesOpen: {
-      type: data.open_issues_count
-    },
+    reponame: data.name,
+    totalIssuesOpen: data.open_issues_count
+      ? Number(data.open_issues_count)
+      : 0,
+
     ownerMeta: {
       avatar_url: data.owner.avatar_url,
       name: data.owner.login
     }
   };
-  const savableData = new Repos(dataToSend);
-  return savableData.save();
+
+  console.log(dataToSend);
+  const found = await Repos.findOne({ repoId: data.id }).exec();
+  if (!found) {
+    const savableData = new Repos(dataToSend);
+    return await savableData.save();
+  } else {
+    return found;
+  }
 };
 
 const getIssues = async (username, reponame, repoId, page = 1) => {
   const data = await IssueHelper.getIssuesByRepo(username, reponame, page);
   const pureIssues = data.filter(item => {
     if (!item.pull_request)
-      return {
+      return new Repos({
         repo: repoId,
         issueTitle: item.title,
         body: item.body,
         number: item.number,
         opendAt: new Date(item.created_at)
-      };
+      });
   });
   const matchFields = ["repo"];
 
   //Perform bulk operation
-  await Issues.upsertMany(items, matchFields);
+  await Issues.upsertMany(pureIssues, matchFields);
   return pureIssues;
 };
 
