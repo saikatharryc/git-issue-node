@@ -51,7 +51,33 @@ const getIssues = async (username, reponame, repoId, page = 1) => {
   return pureIssues;
 };
 
+const getSavedSearches = async () => {
+  console.log("<<Aggregate>>");
+  const query = [
+    {
+      $lookup: {
+        from: "issues",
+        pipeline: [
+          { $match: { _id: "$repo" } },
+          { $project: { reponame: "$reponame", ownerMeta: "$ownerMeta" } }
+        ],
+        as: "repoDetails"
+      }
+    },
+    {
+      $group: {
+        _id: "$repo",
+        docs: { $push: "$$ROOT" }
+      }
+    }
+  ];
+  const data = await Issues.aggregate(query);
+  console.log(data);
+  return data;
+};
+
 module.exports = {
   locateRepo,
-  getIssues
+  getIssues,
+  getSavedSearches
 };

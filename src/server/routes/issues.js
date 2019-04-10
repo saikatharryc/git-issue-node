@@ -35,4 +35,14 @@ router.post("/", (req, res, next) => {
     });
 });
 
+router.get("/visit/history", (req, res, next) => {
+  return issuesCont
+    .getSavedSearches()
+    .then(data => {
+      return res.json(data);
+    })
+    .catch(error => {
+      return next(error);
+    });
+});
 module.exports = router;

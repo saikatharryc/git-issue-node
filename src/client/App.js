@@ -166,10 +166,43 @@ export default class App extends Component {
             </Container>
           </Tab>
           <Tab eventKey="history" title="History">
-            hello
+            <History />
           </Tab>
         </Tabs>
       </div>
+    );
+  }
+}
+
+class History extends Component {
+  componentDidMount = () => {};
+
+  getHistory = () => {
+    fetch("/api/v1/issues/visit/history")
+      .then(res => res.json())
+      .then(data => {
+        this.setState({ allHistory: data });
+      });
+  };
+  render() {
+    return (
+      <Container>
+        {this.state.allHistory &&
+          this.state.allHistory.map(item => {
+            return (
+              <Card>
+                <Card.Body>
+                  <Card.Title>{item.issueTitle}</Card.Title>
+                  <Card.Subtitle className="mb-2 text-muted">
+                    #{item.number}
+                  </Card.Subtitle>
+                  <Card.Text>{item.body}</Card.Text>
+                </Card.Body>
+                <Card.Link href={item.html_url}>Go to the issue</Card.Link>
+              </Card>
+            );
+          })}
+      </Container>
     );
   }
 }
