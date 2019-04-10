@@ -38,8 +38,8 @@ export default class App extends Component {
       .then(
         data => {
           if (data.success) {
-            this.setState({ repoData: data, located: true });
-            this.findIssues();
+            this.setState({ repoData: data, located: true, loader: false });
+            // this.findIssues();
           } else {
             console.log(data.message);
             //show error notification here
@@ -153,36 +153,6 @@ export default class App extends Component {
                   </tbody>
                 </Table>
               )}
-              {this.state.allIssues &&
-                this.state.allIssues.map(item => {
-                  //Iterate here
-                  return (
-                    <Card>
-                      <Card.Body>
-                        <Card.Title>{item.issueTitle}</Card.Title>
-                        <Card.Text>{item.body}</Card.Text>
-                      </Card.Body>
-                      <Card.Link href={item.html_url} target="_blank">
-                        #{item.number}
-                      </Card.Link>
-                    </Card>
-                  );
-                })}
-              {this.state.repoData && this.state.allIssues && (
-                <Button
-                  onClick={() => {
-                    this.setState({ page: (this.state.page || 0) + 1 });
-                    this.findIssues();
-                  }}
-                  disabled={
-                    this.state.repoData.totalIssuesOpen <= this.state.page * 20
-                      ? true
-                      : false
-                  }
-                >
-                  Load more...
-                </Button>
-              )}
             </Container>
           </Tab>
           <Tab eventKey="history" title="History">
@@ -209,24 +179,32 @@ class History extends Component {
   render() {
     return (
       <Container>
-        {this.state.allHistory &&
-          this.state.allHistory.map(item => {
-            if (item.docs) {
-              return item.docs.map(i => {
-                return (
-                  <Card>
-                    <Card.Body>
-                      <Card.Title>{i.issueTitle}</Card.Title>
-                      <Card.Text>{i.body}</Card.Text>
-                    </Card.Body>
-                    <Card.Link href={i.html_url} target="_blank">
-                      #{i.number}
-                    </Card.Link>
-                  </Card>
-                );
-              });
-            }
-          })}
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Repo Id</th>
+              <th>Repo Name</th>
+              <th>Total Open issues</th>
+              <th>user Id</th>
+              <th>user name</th>
+            </tr>
+          </thead>
+          {this.state.allHistory &&
+            this.state.allHistory.map(item => {
+              return (
+                <tbody>
+                  <tr>
+                    <td>#{item.repoId}</td>
+                    <td>{item.reponame}</td>
+                    <td>{item.totalIssuesOpen}</td>
+                    <td>{item.ownerMeta.id}</td>
+                    <td>{item.ownerMeta.name}</td>
+                  </tr>
+                </tbody>
+              );
+            })}
+        </Table>
+        ;
       </Container>
     );
   }

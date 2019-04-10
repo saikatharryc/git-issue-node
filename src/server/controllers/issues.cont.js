@@ -19,7 +19,8 @@ const locateRepo = async (username, reponame) => {
 
     ownerMeta: {
       avatar_url: data.owner.avatar_url,
-      name: data.owner.login
+      name: data.owner.login,
+      id: data.owner.id
     }
   };
   const found = await Repos.findOne({ repoId: data.id })
@@ -79,29 +80,10 @@ const getIssues = async (username, reponame, repoId, page = 1) => {
 };
 
 /**
- * Simply fetches all the data from DB
+ * Simply fetches all the Repos searched for from DB
  */
 const getSavedSearches = async () => {
-  console.log("<<Aggregate>>");
-  const query = [
-    {
-      $lookup: {
-        from: "issues",
-        pipeline: [
-          { $match: { _id: "$repo" } },
-          { $project: { reponame: "$reponame", ownerMeta: "$ownerMeta" } }
-        ],
-        as: "repoDetails"
-      }
-    },
-    {
-      $group: {
-        _id: "$repo",
-        docs: { $push: "$$ROOT" }
-      }
-    }
-  ];
-  const data = await Issues.aggregate(query);
+  const data = await Repos.find({}).exec();
   console.log(data);
   return data;
 };

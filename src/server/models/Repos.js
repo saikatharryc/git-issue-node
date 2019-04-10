@@ -13,7 +13,8 @@ const RepoSchema = new mongoose.Schema(
     },
     ownerMeta: {
       avatar_url: String,
-      name: String //login
+      name: String, //login
+      id: String
       //...name and type all those can go here
     }
   },
