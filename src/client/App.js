@@ -155,6 +155,7 @@ export default class App extends Component {
               )}
               {this.state.allIssues &&
                 this.state.allIssues.map(item => {
+                  //Iterate here
                   return (
                     <Card>
                       <Card.Body>
@@ -200,6 +201,8 @@ class History extends Component {
   state = {};
 
   componentDidMount = () => {
+    //incase of paginate & also for grouping by the repo or grouping by some parent
+    //control goes from here and make this a separate function
     fetch("/api/v1/issues/visit/history")
       .then(res => res.json())
       .then(data => {

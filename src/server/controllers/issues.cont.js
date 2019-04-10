@@ -3,6 +3,11 @@ const Issues = require("../models/Issues");
 
 const IssueHelper = require("../helpers/issues.helper");
 
+/**
+ * Searches for the repo & Saves to DB incase not exist
+ * @param {String} username
+ * @param {String} reponame
+ */
 const locateRepo = async (username, reponame) => {
   const data = await IssueHelper.locateRepo(username, reponame);
   const dataToSend = {
@@ -17,17 +22,13 @@ const locateRepo = async (username, reponame) => {
       name: data.owner.login
     }
   };
-
-  console.log(dataToSend);
   const found = await Repos.findOne({ repoId: data.id })
     .lean()
     .exec();
   const lastDay = await IssueHelper.getIssueCount(username, reponame, 1);
   const lastweek =
     (await IssueHelper.getIssueCount(username, reponame, 2)) - lastDay;
-  const moreThanAWeekAgo =
-    (await IssueHelper.getIssueCount(username, reponame, 3)) -
-    (lastweek + lastDay);
+  const moreThanAWeekAgo = dataToSend.totalIssuesOpen - (lastweek + lastDay);
   if (!found) {
     const savableData = new Repos(dataToSend);
     await savableData.save();
@@ -47,6 +48,13 @@ const locateRepo = async (username, reponame) => {
   }
 };
 
+/**
+ * Gets all issue in paginate manner by following filters
+ * @param {String} username
+ * @param {String} reponame
+ * @param {String} repoId
+ * @param {Number} page
+ */
 const getIssues = async (username, reponame, repoId, page = 1) => {
   const data = await IssueHelper.getIssuesByRepo(username, reponame, page);
   let pureIssues = [];
@@ -65,11 +73,14 @@ const getIssues = async (username, reponame, repoId, page = 1) => {
   console.log(pureIssues);
   const matchFields = ["html_url"];
 
-  //Perform bulk operation
+  //Perform bulk upsert operation
   await Issues.upsertMany(pureIssues, matchFields);
   return pureIssues;
 };
 
+/**
+ * Simply fetches all the data from DB
+ */
 const getSavedSearches = async () => {
   console.log("<<Aggregate>>");
   const query = [

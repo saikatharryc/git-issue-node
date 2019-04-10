@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const issuesCont = require("../controllers/issues.cont");
 
+/**
+ * Search For the repo and upsert the necessery items in DB
+ */
 router.post("/locateRepo", (req, res, next) => {
   const { username, reponame } = req.body;
   console.log(username, reponame);
@@ -20,6 +23,10 @@ router.post("/locateRepo", (req, res, next) => {
     });
 });
 
+/**
+ * Fetches issues details and upserts in DB
+ *
+ */
 router.post("/", (req, res, next) => {
   const { username, reponame, repoId, page = 1 } = req.body;
   if (!username || !reponame) {
@@ -35,6 +42,9 @@ router.post("/", (req, res, next) => {
     });
 });
 
+/**
+ * Fetches Group by records from the DB by the repo ID [from mongo]
+ */
 router.get("/visit/history", (req, res, next) => {
   return issuesCont
     .getSavedSearches()
