@@ -43,7 +43,7 @@ const getIssues = async (username, reponame, repoId, page = 1) => {
   const matchFields = ["repo"];
 
   //Perform bulk operation
-  await Issues.upsertMany(pureIssues, matchFields);
+  await Issues.insertMany(pureIssues);
   return pureIssues;
 };
 
