@@ -1,18 +1,20 @@
 const mongoose = require("mongoose");
 const RepoSchema = new mongoose.Schema(
   {
-    userId: {
+    repoId: {
       type: String,
       required: true
-    },
-    username: {
-      type: String
     },
     repoName: {
       type: String
     },
     totalIssuesOpen: {
       type: Number
+    },
+    ownerMeta: {
+      avatar_url: String,
+      name: String //login
+      //...name and type all those can go here
     }
   },
   {

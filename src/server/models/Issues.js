@@ -14,9 +14,6 @@ const IssueSchema = new mongoose.Schema(
     body: {
       type: String
     },
-    title: {
-      type: String
-    },
     number: {
       type: Number
     },

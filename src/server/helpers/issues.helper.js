@@ -10,7 +10,10 @@ const locateRepo = async (username, reponame) => {
     const repoData = await rp(options);
     return repoData;
   } catch (ex) {
-    return Promise.reject({ message: ex.message || "unknown error occured." });
+    return Promise.reject({
+      message: ex.error.message || "unknown error occured.",
+      status: ex.statusCode
+    });
   }
 };
 
@@ -27,7 +30,10 @@ const getIssuesByRepo = async (username, reponame, page = 1) => {
     const issueData = await rp(options);
     return issueData;
   } catch (ex) {
-    return Promise.reject({ message: ex.message || "unknown error occured." });
+    return Promise.reject({
+      message: ex.error.message || "unknown error occured.",
+      status: ex.statusCode
+    });
   }
 };
 
