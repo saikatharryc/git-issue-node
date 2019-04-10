@@ -19,12 +19,31 @@ const locateRepo = async (username, reponame) => {
   };
 
   console.log(dataToSend);
-  const found = await Repos.findOne({ repoId: data.id }).exec();
+  const found = await Repos.findOne({ repoId: data.id })
+    .lean()
+    .exec();
+  const lastDay = await IssueHelper.getIssueCount(username, reponame, 1);
+  const lastweek =
+    (await IssueHelper.getIssueCount(username, reponame, 2)) - lastDay;
+  const moreThanAWeekAgo =
+    (await IssueHelper.getIssueCount(username, reponame, 3)) -
+    (lastweek + lastDay);
   if (!found) {
     const savableData = new Repos(dataToSend);
-    return await savableData.save();
+    await savableData.save();
+    return {
+      ...dataToSend,
+      lastDayOpenIssue: lastDay,
+      lastWeekOpenIssue: lastweek,
+      moreThanAweekOpenIssue: moreThanAWeekAgo
+    };
   } else {
-    return found;
+    return {
+      ...found,
+      lastDayOpenIssue: lastDay,
+      lastWeekOpenIssue: lastweek,
+      moreThanAweekOpenIssue: moreThanAWeekAgo
+    };
   }
 };
 

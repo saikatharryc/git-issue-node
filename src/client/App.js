@@ -6,7 +6,8 @@ import {
   FormControl,
   Button,
   Container,
-  Card
+  Card,
+  Table
 } from "react-bootstrap";
 import Loader from "react-loader-spinner";
 import "./app.css";
@@ -37,7 +38,7 @@ export default class App extends Component {
       .then(
         data => {
           if (data.success) {
-            this.setState({ repoData: data._doc, located: true });
+            this.setState({ repoData: data, located: true });
             this.findIssues();
           } else {
             console.log(data.message);
@@ -98,6 +99,7 @@ export default class App extends Component {
         ) : (
           <h1>Loading.. please wait!</h1>
         )}
+
         <Tabs defaultActiveKey="home" id="uncontrolled-tab-example">
           <Tab eventKey="home" title="Home">
             <InputGroup className="mb-3 mt-3" style={{ width: "45%" }}>
@@ -131,6 +133,26 @@ export default class App extends Component {
               ) : (
                 ""
               )}
+              {this.state.repoData && (
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Total Open issues</th>
+                      <th>Opend Last 24hrs</th>
+                      <th>24hrs-7days</th>
+                      <th>7days and more</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{this.state.repoData.totalIssuesOpen}</td>
+                      <td>{this.state.repoData.lastDayOpenIssue}</td>
+                      <td>{this.state.repoData.lastWeekOpenIssue}</td>
+                      <td>{this.state.repoData.moreThanAweekOpenIssue}</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              )}
               {this.state.allIssues &&
                 this.state.allIssues.map(item => {
                   return (
@@ -142,7 +164,7 @@ export default class App extends Component {
                         </Card.Subtitle>
                         <Card.Text>{item.body}</Card.Text>
                       </Card.Body>
-                      <Card.Link href={item.html_url}>
+                      <Card.Link href={item.html_url} target="_blank">
                         Go to the issue
                       </Card.Link>
                     </Card>
@@ -175,9 +197,9 @@ export default class App extends Component {
 }
 
 class History extends Component {
-  componentDidMount = () => {};
+  state = {};
 
-  getHistory = () => {
+  componentDidMount = () => {
     fetch("/api/v1/issues/visit/history")
       .then(res => res.json())
       .then(data => {
@@ -189,18 +211,24 @@ class History extends Component {
       <Container>
         {this.state.allHistory &&
           this.state.allHistory.map(item => {
-            return (
-              <Card>
-                <Card.Body>
-                  <Card.Title>{item.issueTitle}</Card.Title>
-                  <Card.Subtitle className="mb-2 text-muted">
-                    #{item.number}
-                  </Card.Subtitle>
-                  <Card.Text>{item.body}</Card.Text>
-                </Card.Body>
-                <Card.Link href={item.html_url}>Go to the issue</Card.Link>
-              </Card>
-            );
+            if (item.docs) {
+              return item.docs.map(i => {
+                return (
+                  <Card>
+                    <Card.Body>
+                      <Card.Title>{i.issueTitle}</Card.Title>
+                      <Card.Subtitle className="mb-2 text-muted">
+                        #{i.number}
+                      </Card.Subtitle>
+                      <Card.Text>{i.body}</Card.Text>
+                    </Card.Body>
+                    <Card.Link href={i.html_url} target="_blank">
+                      Go to the issue
+                    </Card.Link>
+                  </Card>
+                );
+              });
+            }
           })}
       </Container>
     );
