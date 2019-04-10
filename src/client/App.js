@@ -204,7 +204,6 @@ class History extends Component {
               );
             })}
         </Table>
-        ;
       </Container>
     );
   }
