@@ -30,20 +30,24 @@ const locateRepo = async (username, reponame) => {
 
 const getIssues = async (username, reponame, repoId, page = 1) => {
   const data = await IssueHelper.getIssuesByRepo(username, reponame, page);
-  const pureIssues = data.filter(item => {
-    if (!item.pull_request)
-      return new Repos({
+  let pureIssues = [];
+  data.forEach(item => {
+    if (!item.pull_request) {
+      pureIssues.push({
+        html_url: item.html_url,
         repo: repoId,
         issueTitle: item.title,
         body: item.body,
         number: item.number,
         opendAt: new Date(item.created_at)
       });
+    }
   });
-  const matchFields = ["repo"];
+  console.log(pureIssues);
+  const matchFields = ["html_url"];
 
   //Perform bulk operation
-  await Issues.insertMany(pureIssues);
+  await Issues.upsertMany(pureIssues, matchFields);
   return pureIssues;
 };
 

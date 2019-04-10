@@ -19,6 +19,9 @@ const IssueSchema = new mongoose.Schema(
     },
     opendAt: {
       type: Date //created_at
+    },
+    html_url: {
+      type: String
     }
   },
   {

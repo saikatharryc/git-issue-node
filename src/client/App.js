@@ -24,7 +24,7 @@ export default class App extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
   locateRepo = async e => {
-    this.setState({ loader: true });
+    this.setState({ loader: true, allIssues: [], located: false });
     fetch("/api/v1/issues/locateRepo", {
       method: "post",
       headers: { "Content-Type": "application/json" },
@@ -37,7 +37,7 @@ export default class App extends Component {
       .then(
         data => {
           if (data.success) {
-            this.setState({ repoData: data, located: true });
+            this.setState({ repoData: data._doc, located: true });
             this.findIssues();
           } else {
             console.log(data.message);
@@ -55,7 +55,7 @@ export default class App extends Component {
       );
   };
   findIssues = () => {
-    this.state({ loader: true });
+    this.setState({ loader: true });
     fetch("/api/v1/issues/", {
       method: "post",
       headers: { "Content-Type": "application/json" },
@@ -142,9 +142,27 @@ export default class App extends Component {
                         </Card.Subtitle>
                         <Card.Text>{item.body}</Card.Text>
                       </Card.Body>
+                      <Card.Link href={item.html_url}>
+                        Go to the issue
+                      </Card.Link>
                     </Card>
                   );
                 })}
+              {this.state.repoData && this.state.allIssues && (
+                <Button
+                  onClick={() => {
+                    this.setState({ page: (this.state.page || 0) + 1 });
+                    this.findIssues();
+                  }}
+                  disabled={
+                    this.state.repoData.totalIssuesOpen <= this.state.page * 20
+                      ? true
+                      : false
+                  }
+                >
+                  Load more...
+                </Button>
+              )}
             </Container>
           </Tab>
           <Tab eventKey="history" title="History">
