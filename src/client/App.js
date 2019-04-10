@@ -160,13 +160,10 @@ export default class App extends Component {
                     <Card>
                       <Card.Body>
                         <Card.Title>{item.issueTitle}</Card.Title>
-                        <Card.Subtitle className="mb-2 text-muted">
-                          #{item.number}
-                        </Card.Subtitle>
                         <Card.Text>{item.body}</Card.Text>
                       </Card.Body>
                       <Card.Link href={item.html_url} target="_blank">
-                        Go to the issue
+                        #{item.number}
                       </Card.Link>
                     </Card>
                   );
@@ -220,13 +217,10 @@ class History extends Component {
                   <Card>
                     <Card.Body>
                       <Card.Title>{i.issueTitle}</Card.Title>
-                      <Card.Subtitle className="mb-2 text-muted">
-                        #{i.number}
-                      </Card.Subtitle>
                       <Card.Text>{i.body}</Card.Text>
                     </Card.Body>
                     <Card.Link href={i.html_url} target="_blank">
-                      Go to the issue
+                      #{i.number}
                     </Card.Link>
                   </Card>
                 );
