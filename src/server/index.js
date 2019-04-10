@@ -1,9 +1,9 @@
 const express = require("express");
 const os = require("os");
+const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
 const config = require("./config");
-const mongoose = require("mongoose");
 const apiRoutes = require("./routes");
 
 const app = express();

@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const upsertMany = require("@meanie/mongoose-upsert-many");
+
 const IssueSchema = new mongoose.Schema(
   {
     repo: {
@@ -26,5 +28,6 @@ const IssueSchema = new mongoose.Schema(
     timestamps: true
   }
 );
+IssueSchema.plugin(upsertMany);
 const Issues = mongoose.model("Issues", IssueSchema);
 module.exports = Issues;
