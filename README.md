@@ -1,5 +1,7 @@
 ### what is in the repo
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/saikatharryc/git-issue-node.svg)](https://greenkeeper.io/)
+
 `/src/client` holds the code of frontend part
 `/src/server` holds the code for server side [express]
 
