@@ -3,6 +3,12 @@
 `/src/client` holds the code of frontend part
 `/src/server` holds the code for server side [express]
 
+### How to run
+ - To run dev server & frontend `npm run dev`
+ - To start the Frontend `npm run start`
+ - To start the backend `npm run server`
+ - To perform frontend build `npm run build`
+
 #### Key points:
 
 in server-side `helpers/issues.helper.js` file , `getIssueCount` function just finds and gives the count of issues by date.

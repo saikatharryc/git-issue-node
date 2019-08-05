@@ -6,14 +6,13 @@ import {
   FormControl,
   Button,
   Container,
-  Card,
-  Table
+  Table,Alert
 } from "react-bootstrap";
 import Loader from "react-loader-spinner";
 import "./app.css";
 
 export default class App extends Component {
-  state = { username: null };
+  state = { username: null, showAlert:false };
 
   componentDidMount() {
     fetch("/api/getUsername")
@@ -43,14 +42,15 @@ export default class App extends Component {
           } else {
             console.log(data.message);
             //show error notification here
-            this.setState({ located: false, loader: false });
+            this.setState({ located: false, message:data.message === "Not Found" ? "Repo not found" : data.message, repoData: [], showAlert:false,loader: false });
           }
         },
         error => {
           if (error) {
             console.log(error.message);
             //show error notification here
-            this.setState({ located: false, loader: false });
+            this.setState({ located: false, message:"Unknown error occured!", repoData: [],showAlert:false,loader: false });
+            
           }
         }
       );
@@ -99,6 +99,15 @@ export default class App extends Component {
         ) : (
           <h1>Loading.. please wait!</h1>
         )}
+         {!this.state.located && this.state.showAlert && this.state.message &&
+           <Alert variant="danger" onClose={() => this.setState({showAlert:true})}  dismissible>
+           <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
+           <p>
+           {this.state.message || "Unknown Error Occured!"}
+           </p>
+         </Alert>
+         }
+               
 
         <Tabs defaultActiveKey="home" id="uncontrolled-tab-example">
           <Tab eventKey="home" title="Home">
@@ -108,6 +117,8 @@ export default class App extends Component {
                   https://github.com/
                 </InputGroup.Text>
               </InputGroup.Prepend>
+           
+           
               <FormControl
                 name="username"
                 placeholder="user name / org"
