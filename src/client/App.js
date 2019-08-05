@@ -30,7 +30,7 @@ export default class App extends Component {
       showAlert:false, 
       located: false 
     });
-    
+
     fetch("/api/v1/issues/locateRepo", {
       method: "post",
       headers: { "Content-Type": "application/json" },
@@ -117,7 +117,7 @@ export default class App extends Component {
           <h1>Loading.. please wait!</h1>
         )}
          {!this.state.located && this.state.showAlert && this.state.message &&
-           <Alert variant="danger" onClose={() => this.setState({showAlert:true})}  dismissible>
+           <Alert variant="danger" onClose={() => this.setState({showAlert:false})}  dismissible>
            <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
            <p>
            {this.state.message || "Unknown Error Occured!"}
