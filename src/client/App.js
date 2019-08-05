@@ -24,7 +24,13 @@ export default class App extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
   locateRepo = async e => {
-    this.setState({ loader: true, allIssues: [], located: false });
+    this.setState({ 
+      loader: true, 
+      allIssues: [],
+      showAlert:false, 
+      located: false 
+    });
+    
     fetch("/api/v1/issues/locateRepo", {
       method: "post",
       headers: { "Content-Type": "application/json" },
@@ -42,15 +48,26 @@ export default class App extends Component {
           } else {
             console.log(data.message);
             //show error notification here
-            this.setState({ located: false, message:data.message === "Not Found" ? "Repo not found" : data.message, repoData: [], showAlert:false,loader: false });
+            this.setState({ 
+              located: false,
+              message:data.message === "Not Found" ? "Repo not found" : data.message, 
+              repoData: [], 
+              showAlert:true,
+              loader: false
+             });
           }
         },
         error => {
           if (error) {
             console.log(error.message);
             //show error notification here
-            this.setState({ located: false, message:"Unknown error occured!", repoData: [],showAlert:false,loader: false });
-            
+            this.setState({ 
+              located: false, 
+              message:"Unknown error occured!", 
+              repoData: [],
+              showAlert:true,
+              loader: false 
+            });
           }
         }
       );
